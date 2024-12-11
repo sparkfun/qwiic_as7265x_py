@@ -61,6 +61,7 @@ def runExample():
     # 1 is the fastest
     # 1*2.8ms = 5.6ms per reading
     # But we need two integration cycles so 89Hz is aproximately the fastest read rate
+    myAS7265x.set_integration_cycles(1)
 
     myAS7265x.disable_indicator()
 

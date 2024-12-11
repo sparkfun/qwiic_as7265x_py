@@ -46,6 +46,7 @@ New to Qwiic? Take a look at the entire [SparkFun Qwiic ecosystem](https://www.s
 # platform, check it out here: https://github.com/sparkfun/Qwiic_I2C_Py
 import qwiic_i2c
 import time
+import struct # Confirmed present on both CircuitPython and MicroPython
 
 # Define the device name and I2C addresses. These are set in the class defintion
 # as class variables, making them avilable without having to create a class
@@ -203,7 +204,7 @@ class QwiicAS7265x(object):
         # This is based on integration cycles and set by set_integration_cycles
         # We will initialize to the max value of 255 so that the device will wait 
         # for the maximum amount of time before timing out
-        self._maxWaitTime = 255 
+        self._maxWaitTime = int(255 * 2.8 * 1.5)
 
     def is_connected(self):
         """
@@ -228,9 +229,6 @@ class QwiicAS7265x(object):
         if not self.is_connected():
             return False
 
-        self.set_integration_cycles(49) # 50 * 2.8ms = 140ms. 0 to 255 is valid.
-        # If you use Mode 2 or 3 (all the colors) then integration time is double. 140*2 = 280ms between readings.
-
         # Check to see if both slaves are detected
         value = self.virtual_read_register(self.kDevSelectControl)
         if value & (self.kDevSelFirstSlaveMask | value & self.kDevSelSecondSlaveMask) == 0:
@@ -249,6 +247,8 @@ class QwiicAS7265x(object):
         self.set_indicator_current(self.kIndicatorCurrentLimit8mA)
         self.enable_indicator()
 
+        self.set_integration_cycles(49) # 50 * 2.8ms = 140ms. 0 to 255 is valid.
+        # If you use Mode 2 or 3 (all the colors) then integration time is double. 140*2 = 280ms between readings.
 
         # Set to 64x gain and one-shot read of VBGYOR
         self.set_gain(self.kGain64x)
@@ -312,17 +312,12 @@ class QwiicAS7265x(object):
 
         return self.virtual_read_register(self.kFwVersionLow)
 
-    def get_temperature(self, device):
+    def get_temperature(self, device = 0):
         """
         Returns the temperature of a given device in Celsius
 
         :param device: The device to get the temperature from
         :type device: int
-
-        Allowable device values are:
-            - kLedWhite
-            - kLedIr
-            - kLedUv
 
         :return: The temperature in Celsius
         :rtype: int
@@ -353,7 +348,7 @@ class QwiicAS7265x(object):
 
         timeWaited = 0
         while self.data_available() == False:
-            if timeWaited >= self._maxWaitTime:
+            if timeWaited > self._maxWaitTime:
                 return
             time.sleep(self.kPollingDelay / 1000)
             timeWaited += self.kPollingDelay
@@ -378,7 +373,7 @@ class QwiicAS7265x(object):
         """
         Enable the onboard indicator LED
         """
-        self.select_device(self.kLedNir)
+        self.select_device(self.kAS72651Nir)
 
         value = self.virtual_read_register(self.kLedConfig)
         value |= self.kLedConfigIndEnableMask
@@ -389,7 +384,7 @@ class QwiicAS7265x(object):
         """
         Disable the onboard indicator LED
         """
-        self.select_device(self.kLedNir)
+        self.select_device(self.kAS72651Nir)
 
         value = self.virtual_read_register(self.kLedConfig)
         value &= ~self.kLedConfigIndEnableMask
@@ -490,7 +485,7 @@ class QwiicAS7265x(object):
         :param cycleValue: The number of integration cycles to set
         :type cycleValue: int
         """
-        self._maxWaitTime = cycleValue * 2.8 * 1.5 # Wait for 1.5 times the integration time before timing out
+        self._maxWaitTime = int(cycleValue * 2.8 * 1.5) + 1 # Wait for 1.5 times the integration time before timing out
         self.virtual_write_register(self.kIntegrationTime, cycleValue)
 
     def set_bulb_current(self, current, device):
@@ -533,7 +528,7 @@ class QwiicAS7265x(object):
             - kIndicatorCurrentLimit4mA
             - kIndicatorCurrentLimit8mA
         """
-        self.select_device(self.kLedNir)
+        self.select_device(self.kAS72651Nir)
 
         if current > self.kIndicatorCurrentLimit8mA:
             current = self.kIndicatorCurrentLimit8mA
@@ -737,7 +732,21 @@ class QwiicAS7265x(object):
         # Channel calibrated values are stored big-endian
         calBytes = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3
 
-        return calBytes
+        return self.convert_bytes_to_float(calBytes)
+
+    def convert_bytes_to_float(self, myLong):
+        """
+        Convert a 4-byte value containing the bytes of a float respresentation of a number 
+        to a float value
+
+        :param myLong: The 4-byte value to convert
+        :type myLong: int
+
+        :return: The float value
+        :rtype: float
+        """
+        packed_val = struct.pack('I', myLong)
+        return struct.unpack('f', packed_val)[0]
 
     def select_device(self, device):
         """
@@ -750,6 +759,7 @@ class QwiicAS7265x(object):
             - kLedWhite
             - kLedIr
             - kLedUv
+            - kAS72651Nir (arduino lib uses this value in the indicator() functions)
         """
         self.virtual_write_register(self.kDevSelectControl, device)
 
