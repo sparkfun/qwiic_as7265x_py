@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7265x_ex1_basic.py
+# qwiic_as7265x_ex2_leds.py
 #
-# This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-# them to the serial port.
+# This example takes all 18 readings and blinks the illumination LEDs 
+# as it goes. We recommend you point the Triad away from your eyes, the LEDs are *bright*.
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, December 2024
 #
@@ -38,7 +38,10 @@ import qwiic_as7265x
 import sys
 
 def runExample():
-    print("\nQwiic Spectral Triad Example 1 - Basic\n")
+    print("\nQwiic Spectral Triad Example 2 - Readings With LEDs\n")
+
+    print("Point the Triad away and press a key to begin with illumination...")
+    input()
 
     # Create instance of device
     myAS7265x = qwiic_as7265x.QwiicAS7265x()
@@ -53,12 +56,14 @@ def runExample():
     if myAS7265x.begin() == False:
         print("Unable to initialize the AS7265x. Please check your connection", file = sys.stderr)
         return
-
+    
+    myAS7265x.disable_indicator() # Turn off the blue indicator LED
+    
     print("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L")
 
     while True:
         # This is a hard wait while all 18 channels are measured
-        myAS7265x.take_measurements()
+        myAS7265x.take_measurements_with_bulb()
         print(str(myAS7265x.get_calibrated_a()) + ",", end="")  # 410nm
         print(str(myAS7265x.get_calibrated_b()) + ",", end="")  # 435nm
         print(str(myAS7265x.get_calibrated_c()) + ",", end="")  # 460nm

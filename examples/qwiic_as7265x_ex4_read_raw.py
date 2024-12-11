@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7265x_ex1_basic.py
+# qwiic_as7265x_ex4_read_raw.py
 #
-# This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-# them to the serial port.
+# This example shows how to output the raw sensor values. This is probably never needed since the 
+# calibrated values are tuned to each sensor. But it does run faster (2 bytes per channel instead of 4)
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, December 2024
 #
@@ -38,7 +38,7 @@ import qwiic_as7265x
 import sys
 
 def runExample():
-    print("\nQwiic Spectral Triad Example 1 - Basic\n")
+    print("\nQwiic Spectral Triad Example 4 - Read Raw\n")
 
     # Create instance of device
     myAS7265x = qwiic_as7265x.QwiicAS7265x()
@@ -54,31 +54,32 @@ def runExample():
         print("Unable to initialize the AS7265x. Please check your connection", file = sys.stderr)
         return
 
+    myAS7265x.disable_indicator()
     print("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L")
 
     while True:
         # This is a hard wait while all 18 channels are measured
         myAS7265x.take_measurements()
-        print(str(myAS7265x.get_calibrated_a()) + ",", end="")  # 410nm
-        print(str(myAS7265x.get_calibrated_b()) + ",", end="")  # 435nm
-        print(str(myAS7265x.get_calibrated_c()) + ",", end="")  # 460nm
-        print(str(myAS7265x.get_calibrated_d()) + ",", end="")  # 485nm
-        print(str(myAS7265x.get_calibrated_e()) + ",", end="")  # 510nm
-        print(str(myAS7265x.get_calibrated_f()) + ",", end="")  # 535nm
+        print(str(myAS7265x.get_a()) + ",", end="")  # 410nm
+        print(str(myAS7265x.get_b()) + ",", end="")  # 435nm
+        print(str(myAS7265x.get_c()) + ",", end="")  # 460nm
+        print(str(myAS7265x.get_d()) + ",", end="")  # 485nm
+        print(str(myAS7265x.get_e()) + ",", end="")  # 510nm
+        print(str(myAS7265x.get_f()) + ",", end="")  # 535nm
 
-        print(str(myAS7265x.get_calibrated_g()) + ",", end="")  # 560nm
-        print(str(myAS7265x.get_calibrated_h()) + ",", end="")  # 585nm
-        print(str(myAS7265x.get_calibrated_r()) + ",", end="")  # 610nm
-        print(str(myAS7265x.get_calibrated_i()) + ",", end="")  # 645nm
-        print(str(myAS7265x.get_calibrated_s()) + ",", end="")  # 680nm
-        print(str(myAS7265x.get_calibrated_j()) + ",", end="")  # 705nm
+        print(str(myAS7265x.get_g()) + ",", end="")  # 560nm
+        print(str(myAS7265x.get_h()) + ",", end="")  # 585nm
+        print(str(myAS7265x.get_r()) + ",", end="")  # 610nm
+        print(str(myAS7265x.get_i()) + ",", end="")  # 645nm
+        print(str(myAS7265x.get_s()) + ",", end="")  # 680nm
+        print(str(myAS7265x.get_j()) + ",", end="")  # 705nm
 
-        print(str(myAS7265x.get_calibrated_t()) + ",", end="")  # 730nm
-        print(str(myAS7265x.get_calibrated_u()) + ",", end="")  # 760nm
-        print(str(myAS7265x.get_calibrated_v()) + ",", end="")  # 810nm
-        print(str(myAS7265x.get_calibrated_w()) + ",", end="")  # 860nm
-        print(str(myAS7265x.get_calibrated_k()) + ",", end="")  # 900nm
-        print(str(myAS7265x.get_calibrated_l()))  # 940nm	
+        print(str(myAS7265x.get_t()) + ",", end="")  # 730nm
+        print(str(myAS7265x.get_u()) + ",", end="")  # 760nm
+        print(str(myAS7265x.get_v()) + ",", end="")  # 810nm
+        print(str(myAS7265x.get_w()) + ",", end="")  # 860nm
+        print(str(myAS7265x.get_k()) + ",", end="")  # 900nm
+        print(str(myAS7265x.get_l()))  # 940nm	
 
 if __name__ == '__main__':
     try:

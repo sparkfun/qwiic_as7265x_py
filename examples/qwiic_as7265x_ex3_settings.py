@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7265x_ex1_basic.py
+# qwiic_as7265x_ex3_settings.py
 #
-# This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-# them to the serial port.
+# This example shows how to change the gain, mode, and LED drive currents
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, December 2024
 #
@@ -38,7 +37,10 @@ import qwiic_as7265x
 import sys
 
 def runExample():
-    print("\nQwiic Spectral Triad Example 1 - Basic\n")
+    print("\nQwiic Spectral Triad Example 3 - Settings\n")
+
+    print("Point the Triad away and press a key to begin with illumination...")
+    input()
 
     # Create instance of device
     myAS7265x = qwiic_as7265x.QwiicAS7265x()
@@ -53,12 +55,55 @@ def runExample():
     if myAS7265x.begin() == False:
         print("Unable to initialize the AS7265x. Please check your connection", file = sys.stderr)
         return
+    
+    # There are four gain settings. There are four gain settings. It is possible to saturate the reading so don't simply jump to 64x.
+    # kGain1x  # 1x
+    # kGain37x # 3.7x
+    # kGain16x # 16x
+    # kGain64x # 64x (default)
+    myAS7265x.set_gain(myAS7265x.kGain16x)
+
+    # There are four measurement modes, 
+    # kMeasurementMode4Chan     # 4-channel reading 
+                                # on the as7262: V, B, G, Y (O and R will be 0)
+                                # on the as7263: S, T, U, V (R and W will be 0)
+    # kMeasurementMode4Chan2    # 4-channel reading, of 2nd set of channels
+                                # on the as7262: G, Y, O, R (V and B will be 0)
+                                # on the as7263: R, T, U, W (S and V will be 0)
+    # kMeasurementMode6ChanContinuous # 6-channel continuous reading
+    # kMeasurementMode6ChanOneShot (default) # 6-channel one-shot reading
+    myAS7265x.set_measurement_mode(myAS7265x.kMeasurementMode6ChanOneShot)
+
+    # Integration cycles is from 0 (2.78ms) to 255 (711ms)
+    # myAS7265x.set_integration_cycles(49) # default is 50*2.8ms = 140ms per reading
+    myAS7265x.set_integration_cycles(1) # 2*2.8ms = 5.6ms per reading
+
+    # Drive current can be set for each LED, but each LED has a different max current
+    # kLedCurrentLimit12_5mA # 12.5mA (default)
+    # kLedCurrentLimit25mA  # 25mA (NOT ALLOWED FOR UV)
+    # kLedCurrentLimit50mA  # 50mA (NOT ALLOWED FOR UV)
+    # kLedCurrentLimit100mA # 100mA (NOT ALLOWED FOR UV OR IR)
+    myAS7265x.set_bulb_current(myAS7265x.kLedCurrentLimit12_5mA, myAS7265x.kLedWhite) 
+
+    # UV LED has max forward current of 30mA so DO NOT set the drive current higher
+    myAS7265x.set_bulb_current(myAS7265x.kLedCurrentLimit12_5mA, myAS7265x.kLedUv)
+    
+    # IR LED has max forward current of 65mA so DO NOT set the drive current higher
+    myAS7265x.set_bulb_current(myAS7265x.kLedCurrentLimit12_5mA, myAS7265x.kLedIr)
+
+    # The status indicator Blue LED can be enabled/disabled and have its current set
+    # can also call enable_indicator() # Default
+    myAS7265x.disable_indicator(); 
+    
+    # The interrupt pin is active low and can be enabled or disabled
+    # can also call disable_interrupt()
+    myAS7265x.enable_interrupt(); # Default
 
     print("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L")
 
     while True:
         # This is a hard wait while all 18 channels are measured
-        myAS7265x.take_measurements()
+        myAS7265x.take_measurements_with_bulb()
         print(str(myAS7265x.get_calibrated_a()) + ",", end="")  # 410nm
         print(str(myAS7265x.get_calibrated_b()) + ",", end="")  # 435nm
         print(str(myAS7265x.get_calibrated_c()) + ",", end="")  # 460nm

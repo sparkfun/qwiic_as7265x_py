@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7265x_ex1_basic.py
+# qwiic_as7265x_ex7_get_version.py
 #
-# This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-# them to the serial port.
+# This example shows how to read the temperature of the ICs
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, December 2024
 #
@@ -38,7 +37,7 @@ import qwiic_as7265x
 import sys
 
 def runExample():
-    print("\nQwiic Spectral Triad Example 1 - Basic\n")
+    print("\nQwiic Spectral Triad Example 7 - Get Version\n")
 
     # Create instance of device
     myAS7265x = qwiic_as7265x.QwiicAS7265x()
@@ -54,31 +53,19 @@ def runExample():
         print("Unable to initialize the AS7265x. Please check your connection", file = sys.stderr)
         return
 
-    print("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L")
+    deviceType = myAS7265x.get_device_type()
+    hardwareVersion = myAS7265x.get_hardware_version()
+    majorFirmwareVersion = myAS7265x.get_major_firmware_version()
+    patchFirmwareVersion = myAS7265x.get_patch_firmware_version()
+    buildFirmwareVersion = myAS7265x.get_build_firmware_version()
 
-    while True:
-        # This is a hard wait while all 18 channels are measured
-        myAS7265x.take_measurements()
-        print(str(myAS7265x.get_calibrated_a()) + ",", end="")  # 410nm
-        print(str(myAS7265x.get_calibrated_b()) + ",", end="")  # 435nm
-        print(str(myAS7265x.get_calibrated_c()) + ",", end="")  # 460nm
-        print(str(myAS7265x.get_calibrated_d()) + ",", end="")  # 485nm
-        print(str(myAS7265x.get_calibrated_e()) + ",", end="")  # 510nm
-        print(str(myAS7265x.get_calibrated_f()) + ",", end="")  # 535nm
+    print("Device Type:", hex(deviceType))
+    print("HardwareVersion:", hex(hardwareVersion))
+    print("Major Firmware Version:", hex(majorFirmwareVersion))
+    print("Patch Firmware Version:", hex(patchFirmwareVersion))
+    print("Build Firmware Version:", hex(buildFirmwareVersion))
 
-        print(str(myAS7265x.get_calibrated_g()) + ",", end="")  # 560nm
-        print(str(myAS7265x.get_calibrated_h()) + ",", end="")  # 585nm
-        print(str(myAS7265x.get_calibrated_r()) + ",", end="")  # 610nm
-        print(str(myAS7265x.get_calibrated_i()) + ",", end="")  # 645nm
-        print(str(myAS7265x.get_calibrated_s()) + ",", end="")  # 680nm
-        print(str(myAS7265x.get_calibrated_j()) + ",", end="")  # 705nm
-
-        print(str(myAS7265x.get_calibrated_t()) + ",", end="")  # 730nm
-        print(str(myAS7265x.get_calibrated_u()) + ",", end="")  # 760nm
-        print(str(myAS7265x.get_calibrated_v()) + ",", end="")  # 810nm
-        print(str(myAS7265x.get_calibrated_w()) + ",", end="")  # 860nm
-        print(str(myAS7265x.get_calibrated_k()) + ",", end="")  # 900nm
-        print(str(myAS7265x.get_calibrated_l()))  # 940nm	
+    return
 
 if __name__ == '__main__':
     try:

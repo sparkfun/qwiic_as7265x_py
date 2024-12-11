@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7265x_ex1_basic.py
+# qwiic_as7265x_ex5_max_read_rate.py
 #
-# This example takes all 18 readings, 372nm to 966nm, over I2C and outputs
-# them to the serial port.
+# This example shows how to setup the sensor for max, calibrated read rate.
+# Printing floats is the greatest bottleneck so we increase it to 115200.
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, December 2024
 #
@@ -38,7 +38,7 @@ import qwiic_as7265x
 import sys
 
 def runExample():
-    print("\nQwiic Spectral Triad Example 1 - Basic\n")
+    print("\nQwiic Spectral Triad Example 5 - Max Read Rate\n")
 
     # Create instance of device
     myAS7265x = qwiic_as7265x.QwiicAS7265x()
@@ -53,12 +53,31 @@ def runExample():
     if myAS7265x.begin() == False:
         print("Unable to initialize the AS7265x. Please check your connection", file = sys.stderr)
         return
+    
+    # All 6 channels on all devices
+    myAS7265x.set_measurement_mode(myAS7265x.kMeasurementMode6ChanContinuous)
+
+    # 0 seems to cause the sensors to read very slowly
+    # 1 is the fastest
+    # 1*2.8ms = 5.6ms per reading
+    # But we need two integration cycles so 89Hz is aproximately the fastest read rate
+
+    myAS7265x.disable_indicator()
+
+    # Rather than toggle the LEDs with each measurment, turn all on all the time
+    myAS7265x.enable_bulb(myAS7265x.kLedWhite)
+    myAS7265x.enable_bulb(myAS7265x.kLedIr)
+    myAS7265x.enable_bulb(myAS7265x.kLedUv)
 
     print("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L")
 
     while True:
-        # This is a hard wait while all 18 channels are measured
-        myAS7265x.take_measurements()
+        # Must wait two integration cycles to get all values
+        while myAS7265x.data_available() == False:
+            pass
+        
+        # Notice that we don't explicitly call take_measurements since we are in continuous mode
+        
         print(str(myAS7265x.get_calibrated_a()) + ",", end="")  # 410nm
         print(str(myAS7265x.get_calibrated_b()) + ",", end="")  # 435nm
         print(str(myAS7265x.get_calibrated_c()) + ",", end="")  # 460nm

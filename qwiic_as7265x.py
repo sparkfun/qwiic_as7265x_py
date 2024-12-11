@@ -449,8 +449,8 @@ class QwiicAS7265x(object):
             gain = self.kGain64x
 
         value = self.virtual_read_register(self.kConfig)
-        value &= ~0b11
-        value |= gain
+        value &= ~self.kConfigGainMask
+        value |= gain << self.kConfigGainShift
 
         self.virtual_write_register(self.kConfig, value)
 
@@ -698,12 +698,12 @@ class QwiicAS7265x(object):
     def get_f(self):
         return self.get_channel(self.kWLF, self.kAS72653Uv)
 
-    def get_channel(self, channel_reg, device):
+    def get_channel(self, channelReg, device):
         """
         Get the channel data for a specific device
 
-        :param channel_reg: The register address of the channel
-        :type channel_reg: int
+        :param channelReg: The register address of the channel
+        :type channelReg: int
         :param device: The device to get the channel data from
         :type device: int
 
@@ -711,8 +711,8 @@ class QwiicAS7265x(object):
         :rtype: int
         """
         self.select_device(device)
-        color_data = self.virtual_read_register(channel_reg) << 8  # High byte
-        color_data |= self.virtual_read_register(channel_reg + 1)  # Low byte
+        color_data = self.virtual_read_register(channelReg) << 8  # High byte
+        color_data |= self.virtual_read_register(channelReg + 1)  # Low byte
         return color_data
 
     def get_calibrated_value(self, calAddress, device):
