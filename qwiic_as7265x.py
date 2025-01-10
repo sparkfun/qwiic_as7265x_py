@@ -33,7 +33,7 @@
 # SOFTWARE.
 #===============================================================================
 
-"""
+"""!
 qwiic_as7265x
 ============
 Python module for the [SparkFun Qwiic Triad Spectroscopy Sensor AS7265x](https://www.sparkfun.com/products/15050)
@@ -175,15 +175,13 @@ class QwiicAS7265x(object):
     kMeasurementMode6ChanOneShot = 0b11
     
     def __init__(self, address=None, i2c_driver=None):
-        """
+        """!
         Constructor
 
-        :param address: The I2C address to use for the device
+        @param int, optional address: The I2C address to use for the device
             If not provided, the default address is used
-        :type address: int, optional
-        :param i2c_driver: An existing i2c driver object
+        @param I2CDriver, optional i2c_driver: An existing i2c driver object
             If not provided, a driver object is created
-        :type i2c_driver: I2CDriver, optional
         """
 
         # Use address if provided, otherwise pick the default
@@ -207,11 +205,10 @@ class QwiicAS7265x(object):
         self._maxWaitTime = int(255 * 2.8 * 1.5)
 
     def is_connected(self):
-        """
+        """!
         Determines if this device is connected
 
-        :return: `True` if connected, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if connected, otherwise `False`
         """
         # Check if connected by seeing if an ACK is received
         return self._i2c.isDeviceConnected(self.address)
@@ -219,11 +216,10 @@ class QwiicAS7265x(object):
     connected = property(is_connected)
 
     def begin(self):
-        """
+        """!
         Initializes this device with default parameters
 
-        :return: Returns `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** Returns `True` if successful, otherwise `False`
         """
         # Confirm device is connected before doing anything
         if not self.is_connected():
@@ -259,29 +255,26 @@ class QwiicAS7265x(object):
         return True
     
     def get_device_type(self):
-        """
+        """!
         Returns the device type (HW Version High Byte)
 
-        :return: The device type
-        :rtype: int
+        @return **int** The device type
         """
         return self.virtual_read_register(self.kHwVersionHigh)
 
     def get_hardware_version(self):
-        """
+        """!
         Returns the hardware version of the device
 
-        :return: The hardware version of the device
-        :rtype: int
+        @return **int** The hardware version of the device
         """
         return self.virtual_read_register(self.kHwVersionLow)
 
     def get_major_firmware_version(self):
-        """
+        """!
         Get the major firmware version of the device
 
-        :return: The major firmware version
-        :rtype: int
+        @return **int** The major firmware version
         """
         self.virtual_write_register(self.kFwVersionHigh, 0x01) # Set to 0x01 for Major
         self.virtual_write_register(self.kFwVersionLow, 0x01) # Set to 0x01 for Major
@@ -289,11 +282,10 @@ class QwiicAS7265x(object):
         return self.virtual_read_register(self.kFwVersionLow)
 
     def get_patch_firmware_version(self):
-        """
+        """!
         Get the patch firmware version of the device
 
-        :return: The patch firmware version
-        :rtype: int
+        @return **int** The patch firmware version
         """
         self.virtual_write_register(self.kFwVersionHigh, 0x02)  # Set to 0x02 for Patch
         self.virtual_write_register(self.kFwVersionLow, 0x02)   # Set to 0x02 for Patch
@@ -301,11 +293,10 @@ class QwiicAS7265x(object):
         return self.virtual_read_register(self.kFwVersionLow)
 
     def get_build_firmware_version(self):
-        """
+        """!
         Get the build firmware version of the device
 
-        :return: The build firmware version
-        :rtype: int
+        @return **int** The build firmware version
         """
         self.virtual_write_register(self.kFwVersionHigh, 0x03)  # Set to 0x03 for Build
         self.virtual_write_register(self.kFwVersionLow, 0x03)   # Set to 0x03 for Build
@@ -313,24 +304,21 @@ class QwiicAS7265x(object):
         return self.virtual_read_register(self.kFwVersionLow)
 
     def get_temperature(self, device = 0):
-        """
+        """!
         Returns the temperature of a given device in Celsius
 
-        :param device: The device to get the temperature from
-        :type device: int
+        @param int device: The device to get the temperature from
 
-        :return: The temperature in Celsius
-        :rtype: int
+        @return **int** The temperature in Celsius
         """
         self.select_device(device)
         return self.virtual_read_register(self.kDeviceTemp)
 
     def get_temperature_average(self):
-        """
+        """!
         Get the average temperature from all three devices
 
-        :return: The average temperature in Celsius
-        :rtype: float
+        @return **float** The average temperature in Celsius
         """
         average = 0.0
 
@@ -340,7 +328,7 @@ class QwiicAS7265x(object):
         return average / 3
 
     def take_measurements(self):
-        """
+        """!
         Tells IC to take all channel measurements and polls for data ready flag
         """
         # Set mode to all 6-channels, one-shot
@@ -356,7 +344,7 @@ class QwiicAS7265x(object):
         # Readings can now be accessed via getCalibratedA(), getJ(), etc.
 
     def take_measurements_with_bulb(self):
-        """
+        """!
         Turns on all bulbs, takes measurements of all channels, turns off all bulbs
         """
         self.enable_bulb(self.kLedWhite)
@@ -370,7 +358,7 @@ class QwiicAS7265x(object):
         self.disable_bulb(self.kLedUv)
 
     def enable_indicator(self):
-        """
+        """!
         Enable the onboard indicator LED
         """
         self.select_device(self.kAS72651Nir)
@@ -381,7 +369,7 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kLedConfig, value)
 
     def disable_indicator(self):
-        """
+        """!
         Disable the onboard indicator LED
         """
         self.select_device(self.kAS72651Nir)
@@ -392,11 +380,10 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kLedConfig, value)
 
     def enable_bulb(self, device):
-        """
+        """!
         Enable the LED or bulb on a given device
 
-        :param device: The device to enable the LED for
-        :type device: int
+        @param int device: The device to enable the LED for
 
         Allowable device values are:
             - kLedWhite
@@ -411,11 +398,10 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kLedConfig, value)
 
     def disable_bulb(self, device):
-        """
+        """!
         Disable the LED or bulb on a given device
 
-        :param device: The device to disable the LED for
-        :type device: int
+        @param int device: The device to disable the LED for
 
         Allowable device values are:
             - kLedWhite
@@ -430,15 +416,14 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kLedConfig, value)
 
     def set_gain(self, gain):
-        """
+        """!
         Sets the gain value
         Gain 0: 1x (power-on default)
         Gain 1: 3.7x
         Gain 2: 16x
         Gain 3: 64x
 
-        :param gain: The gain value to set
-        :type gain: int
+        @param int gain: The gain value to set
         """
         if gain > self.kGain64x:
             gain = self.kGain64x
@@ -450,7 +435,7 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kConfig, value)
 
     def set_measurement_mode(self, mode):
-        """
+        """!
         Sets the measurement mode
 
         Mode 0: 4 channels out of 6 (see datasheet)
@@ -458,8 +443,7 @@ class QwiicAS7265x(object):
         Mode 2: All 6 channels continuously
         Mode 3: One-shot reading of all channels
 
-        :param mode: The mode to set
-        :type mode: int
+        @param int mode: The mode to set
 
         Allowable mode values are:
             - kMeasurementMode4Chan
@@ -477,32 +461,28 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kConfig, value)
 
     def set_integration_cycles(self, cycleValue):
-        """
+        """!
         Sets the integration cycle amount. 
         Give this function a byte from 0 to 255.
         Time will be 2.8ms * [integration cycles + 1]
 
-        :param cycleValue: The number of integration cycles to set
-        :type cycleValue: int
+        @param int cycleValue: The number of integration cycles to set
         """
         self._maxWaitTime = int(cycleValue * 2.8 * 1.5) + 1 # Wait for 1.5 times the integration time before timing out
         self.virtual_write_register(self.kIntegrationTime, cycleValue)
 
     def set_bulb_current(self, current, device):
-        """
+        """!
         Set the current for the specified LED
 
-        :param current: The current to set the LED to
-        :type current: int
+        @param int current: The current to set the LED to
 
         Allowable current values are:
             - kLedCurrentLimit12_5mA
             - kLedCurrentLimit25mA
             - kLedCurrentLimit50mA
             - kLedCurrentLimit100mA
-
-        :param device: The device to set the current for
-        :type device: int
+        @param int device: The device to set the current for
         """
         self.select_device(device)
 
@@ -516,11 +496,10 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kLedConfig, value)
 
     def set_indicator_current(self, current):
-        """
+        """!
         Set the current limit of onboard LED. Default is max 8mA = 0b11.
 
-        :param current: The current limit to set the indicator LED to
-        :type current: int
+        @param int current: The current limit to set the indicator LED to
 
         Allowable current values are:
             - kIndicatorCurrentLimit1mA
@@ -541,7 +520,7 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kLedConfig, value)
 
     def enable_interrupt(self):
-        """
+        """!
         Enable the interrupt pin
         """
         value = self.virtual_read_register(self.kConfig)
@@ -550,7 +529,7 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kConfig, value)
 
     def disable_interrupt(self):
-        """
+        """!
         Disable the interrupt pin
         """
         value = self.virtual_read_register(self.kConfig)
@@ -559,7 +538,7 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kConfig, value)
 
     def soft_reset(self):
-        """
+        """!
         Does a soft reset. Give sensor at least 1000ms to reset
         """
         value = self.virtual_read_register(self.kConfig)
@@ -567,11 +546,10 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kConfig, value) 
 
     def data_available(self):
-        """
+        """!
         Check if the data ready flag is set in the control setup register
 
-        :return: `True` if the data ready flag is set, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if the data ready flag is set, otherwise `False`
         """
         value = self.virtual_read_register(self.kConfig)
         return (value & self.kConfigDataReadyMask) != 0
@@ -694,16 +672,13 @@ class QwiicAS7265x(object):
         return self.get_channel(self.kWLF, self.kAS72653Uv)
 
     def get_channel(self, channelReg, device):
-        """
+        """!
         Get the channel data for a specific device
 
-        :param channelReg: The register address of the channel
-        :type channelReg: int
-        :param device: The device to get the channel data from
-        :type device: int
+        @param int channelReg: The register address of the channel
+        @param int device: The device to get the channel data from
 
-        :return: The channel data
-        :rtype: int
+        @return **int** The channel data
         """
         self.select_device(device)
         color_data = self.virtual_read_register(channelReg) << 8  # High byte
@@ -711,16 +686,13 @@ class QwiicAS7265x(object):
         return color_data
 
     def get_calibrated_value(self, calAddress, device):
-        """
+        """!
         Given an address, read four bytes and return the floating point calibrated value
 
-        :param calAddress: The address to read the calibrated value from
-        :type calAddress: int
-        :param device: The device to read the calibrated value from
-        :type device: int
+        @param int calAddress: The address to read the calibrated value from
+        @param int device: The device to read the calibrated value from
 
-        :return: The calibrated value
-        :rtype: float
+        @return **float** The calibrated value
         """
         self.select_device(device)
 
@@ -735,25 +707,22 @@ class QwiicAS7265x(object):
         return self.convert_bytes_to_float(calBytes)
 
     def convert_bytes_to_float(self, myLong):
-        """
+        """!
         Convert a 4-byte value containing the bytes of a float respresentation of a number 
         to a float value
 
-        :param myLong: The 4-byte value to convert
-        :type myLong: int
+        @param int myLong: The 4-byte value to convert
 
-        :return: The float value
-        :rtype: float
+        @return **float** The float value
         """
         packed_val = struct.pack('I', myLong)
         return struct.unpack('f', packed_val)[0]
 
     def select_device(self, device):
-        """
+        """!
         Point the master at either the first or the second slave
 
-        :param device: The device to select
-        :type device: int
+        @param int device: The device to select
 
         Allowable device values are:
             - kLedWhite
@@ -764,14 +733,12 @@ class QwiicAS7265x(object):
         self.virtual_write_register(self.kDevSelectControl, device)
 
     def virtual_read_register(self, virtualAddr):
-        """
+        """!
         Read a virtual register from the AS7265x
 
-        :param virtualAddr: The virtual register address to read
-        :type virtualAddr: int
+        @param int virtualAddr: The virtual register address to read
 
-        :return: The value of the virtual register
-        :rtype: int
+        @return **int** The value of the virtual register
         """
         status = self._i2c.read_byte(self.address, self.kStatusReg)
 
@@ -804,14 +771,11 @@ class QwiicAS7265x(object):
         return self._i2c.read_byte(self.address, self.kReadReg)
     
     def virtual_write_register(self, virtualAddr, data):
-        """
+        """!
         Write a virtual register to the AS7265x
 
-        :param virtualAddr: The virtual register address to write
-        :type virtualAddr: int
-
-        :param data: The data byte to write to the virtual register
-        :type data: int
+        @param int virtualAddr: The virtual register address to write
+        @param int data: The data byte to write to the virtual register
         """
 
         # Wait for WRITE regiser to be empty
