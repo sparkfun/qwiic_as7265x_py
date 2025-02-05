@@ -4,7 +4,7 @@ requires = ["setuptools"]
 [project]
 name = "sparkfun_qwiic_as7265x"
 version = "1.0.0"
-description = "SparkFun Electronics Qwiic AS7265X"
+description = "Sparkfun Electronics Qwiic AS7265x Package"
 readme = "DESCRIPTION.rst"
 
 authors = [{name="Sparkfun Electronics", email="info@sparkfun.com"}]
