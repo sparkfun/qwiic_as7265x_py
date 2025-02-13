@@ -17,16 +17,16 @@ This example takes all 18 readings and blinks the illumination LEDs
 
 The key methods showcased by this example are:
 - [disable_indicator()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#afc403ccd22fb54156197c3c293a07a36)
--[take_measurements_with_bulb](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a9ee5e8f30d9144185a6f6bf1a8144081)
+- [take_measurements_with_bulb](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a9ee5e8f30d9144185a6f6bf1a8144081)
 
 ## Qwiic As7265X Ex3 Settings
 This example shows how to change the gain, mode, and LED drive currents
 
 The key methods showcased by this example are:
--[set_measurement_mode()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#af04db0797009e6ade5157c1d20745348)
--[set_integration_cycles()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a383163d75d5e0fbf113dd8cd4a555343)
--[set_bulb_current()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a72211e8d0ee86a8199c2ada8b9f44985)
--[enable_interrupt()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#ae94cdcd0a16ed75d68519421555d405f)
+- [set_measurement_mode()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#af04db0797009e6ade5157c1d20745348)
+- [set_integration_cycles()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a383163d75d5e0fbf113dd8cd4a555343)
+- [set_bulb_current()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a72211e8d0ee86a8199c2ada8b9f44985)
+- [enable_interrupt()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#ae94cdcd0a16ed75d68519421555d405f)
 
 ## Qwiic As7265X Ex4 Read Raw
 This example shows how to output the raw sensor values. This is probably never needed since the 
@@ -41,17 +41,17 @@ This example shows how to setup the sensor for max, calibrated read rate.
 This example shows how to read the temperature of the ICs
 
 The key methods showcased by this example are:
--[get_temperature()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a7cb6f3bd95580320f921dbdb89018dde)
--[get_temperature_average()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#aa29dee5ba70f93617cb53da1b44ac3ad)
+- [get_temperature()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a7cb6f3bd95580320f921dbdb89018dde)
+- [get_temperature_average()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#aa29dee5ba70f93617cb53da1b44ac3ad)
 
 ## Qwiic As7265X Ex7 Get Version
 This example shows how to read the temperature of the ICs
 
 The key methods showcased by this example are:
--[get_device_type()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a81810e5c709f2878b651386cc977ee7f)
--[get_hardware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a0ff501a7189e0c2c274373b5054eef86)
--[get_major_firmware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a4a3978e5d2885619251e45b326be1385)
--[get_patch_firmware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a0f189aa5b53483fa32426c1ed6ad5ba3)
--[get_build_firmware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a2c751397d744ebafef93ce8b6d119c25)
+- [get_device_type()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a81810e5c709f2878b651386cc977ee7f)
+- [get_hardware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a0ff501a7189e0c2c274373b5054eef86)
+- [get_major_firmware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a4a3978e5d2885619251e45b326be1385)
+- [get_patch_firmware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a0f189aa5b53483fa32426c1ed6ad5ba3)
+- [get_build_firmware_version()](https://docs.sparkfun.com/qwiic_as7265x_py/classqwiic__as7265x_1_1_qwiic_a_s7265x.html#a2c751397d744ebafef93ce8b6d119c25)
 
 
